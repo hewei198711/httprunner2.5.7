@@ -1,6 +1,7 @@
 import os
 import unittest
 
+
 from sentry_sdk import capture_message
 
 from httprunner import (__version__, exceptions, loader, logger, parser,
