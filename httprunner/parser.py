@@ -35,6 +35,9 @@ def parse_string_value(str_value):
          "abc" => "abc"
          "$var" => "$var"
     """
+    print("----------------调用函数---------------")
+    print("调用函数：parse_string_value(str_value)")
+    print("参数：{}".format(str_value))
     try:
         return ast.literal_eval(str_value)
     except ValueError:
@@ -48,6 +51,9 @@ def is_var_or_func_exist(content):
     """ check if variable or function exist
         检查是否有引用变量或函数存在
     """
+    print("----------------调用函数---------------")
+    print("调用函数：is_var_or_func_exist(content)")
+    print("参数：{}".format(content))
     if not isinstance(content, basestring):
         return False
 
@@ -100,6 +106,9 @@ def regex_findall_variables(content):
         []
 
     """
+    print("----------------调用函数---------------")
+    print("调用函数：regex_findall_variables(content)")
+    print("参数：{}".format(content))
     try:
         vars_list = []
         for var_tuple in variable_regex_compile.findall(content):
@@ -137,6 +146,9 @@ def regex_findall_functions(content):
         ["add(1, 2)", "get_timestamp()"]
 
     """
+    print("----------------调用函数---------------")
+    print("调用函数：regex_findall_functions(content)")
+    print("参数：{}".format(content))
     try:
         return function_regex_compile.findall(content)
     except TypeError:
@@ -169,6 +181,11 @@ def parse_parameters(parameters, variables_mapping=None, functions_mapping=None)
         >>> parse_parameters(parameters)
 
     """
+    print("----------------调用函数---------------")
+    print("调用函数：parse_parameters(parameters, variables_mapping=None, functions_mapping=None)")
+    print("参数：{}".format(parameters))
+    print("参数：{}".format(variables_mapping))
+    print("参数：{}".format(functions_mapping))
     variables_mapping = variables_mapping or {}
     functions_mapping = functions_mapping or {}
     parsed_parameters_list = []
@@ -241,6 +258,9 @@ def get_uniform_comparator(comparator):
     """ convert comparator alias to uniform name
         将比较器别名转换为统一名称
     """
+    print("----------------调用函数---------------")
+    print("调用函数：get_uniform_comparator(comparator)")
+    print("参数：{}".format(comparator))
     if comparator in ["eq", "equals", "==", "is"]:
         return "equals"
     elif comparator in ["lt", "less_than"]:
@@ -295,6 +315,9 @@ def uniform_validator(validator):
             }
 
     """
+    print("----------------调用函数---------------")
+    print("调用函数：uniform_validator(validator)")
+    print("参数：{}".format(validator))
     if not isinstance(validator, dict):
         raise exceptions.ParamsError("invalid validator: {}".format(validator))
 
@@ -348,6 +371,9 @@ def _convert_validators_to_mapping(validators):
         }
 
     """
+    print("----------------调用函数---------------")
+    print("调用函数：_convert_validators_to_mapping(validators)")
+    print("参数：{}".format(validators))
     validators_mapping = {}
 
     for validator in validators:
@@ -387,6 +413,10 @@ def extend_validators(raw_validators, override_validators):
 
     """
 
+    print("----------------调用函数---------------")
+    print("调用函数：extend_validators(raw_validators, override_validators)")
+    print("参数：{}".format(raw_validators))
+    print("参数：{}".format(override_validators))
     if not raw_validators:
         return override_validators
 
@@ -420,6 +450,10 @@ def get_mapping_variable(variable_name, variables_mapping):
         exceptions.VariableNotFound: variable is not found.
 
     """
+    print("----------------调用函数---------------")
+    print("调用函数：get_mapping_variable(variable_name, variables_mapping)")
+    print("参数：{}".format(variable_name))
+    print("参数：{}".format(variables_mapping))
     try:
         return variables_mapping[variable_name]
     except KeyError:
@@ -444,6 +478,10 @@ def get_mapping_function(function_name, functions_mapping):
         函数既不是在debugtalk.py中定义的，也不是内置函数。
 
     """
+    print("----------------调用函数---------------")
+    print("调用函数：get_mapping_function(function_name, functions_mapping)")
+    print("参数：{}".format(function_name))
+    print("参数：{}".format(functions_mapping))
     if function_name in functions_mapping:
         return functions_mapping[function_name]
 
@@ -506,6 +544,9 @@ def parse_function_params(params):
         {'args': [1, 2], 'kwargs': {'a':3, 'b':4}}
 
     """
+    print("----------------调用函数---------------")
+    print("调用函数：parse_function_params(params)")
+    print("参数：{}".format(params))
     function_meta = {  # 元函数
         "args": [],
         "kwargs": {}
@@ -548,6 +589,11 @@ class LazyFunction(object):
         self.check_variables_set = check_variables_set or set()  # 检查变量设置
         self.cache_key = None  # 缓存键
         self.__parse(function_meta)
+        print("----------------调用类---------------")
+        print("调用类：LazyFunction(object)")
+        print("参数：{}".format(function_meta))
+        print("参数：{}".format(functions_mapping))
+        print("参数：{}".format(check_variables_set))
 
     def __parse(self, function_meta):
         """ init func as lazy functon instance
@@ -557,6 +603,9 @@ class LazyFunction(object):
             function_meta (dict): function meta including name, args and kwargs
             包含名称的函数元
         """
+        print("----------------调用类函数---------------")
+        print("调用函数：__parse(LazyFunction(object), function_meta)")
+        print("参数：{}".format(function_meta))
         self._func = get_mapping_function(
             function_meta["func_name"],
             self.functions_mapping
@@ -583,12 +632,19 @@ class LazyFunction(object):
             self._args = [self._args[0]]
 
     def get_args(self):
+        print("----------------调用类函数---------------")
+        print("调用函数：get_args(LazyFunction(object))")
         return self._args
 
     def update_args(self, args):
+        print("----------------调用类函数---------------")
+        print("调用函数：update_args(LazyFunction(object)，args)")
+        print("参数：{}".format(args))
         self._args = args
 
     def __repr__(self):
+        print("----------------调用类函数---------------")
+        print("调用函数：__repr__(LazyFunction(object))")
         args_string = ""
 
         if self._args:
@@ -606,6 +662,10 @@ class LazyFunction(object):
         return "LazyFunction({}({}))".format(self.func_name, args_string)
 
     def __prepare_cache_key(self, args, kwargs):
+        print("----------------调用类函数---------------")
+        print("调用函数：__prepare_cache_key(LazyFunction(object)，args, kwargs)")
+        print("参数：{}".format(args))
+        print("参数：{}".format(kwargs))
         return self.func_name, repr(args), repr(kwargs)
 
     def to_value(self, variables_mapping=None):
@@ -614,6 +674,9 @@ class LazyFunction(object):
             Notice: variables_mapping should not contain any variable or function.
             注意:variables_mapping不应该包含任何变量或函数
         """
+        print("----------------调用类函数---------------")
+        print("调用函数：to_value(LazyFunction(object)，variables_mapping=None)")
+        print("参数：{}".format(variables_mapping))
         variables_mapping = variables_mapping or {}
         args = parse_lazy_data(self._args, variables_mapping)
         kwargs = parse_lazy_data(self._kwargs, variables_mapping)
@@ -641,6 +704,12 @@ class LazyString(object):
         self.check_variables_set = check_variables_set or set()
         self.cached = cached
         self.__parse(raw_string)
+        print("----------------调用类---------------")
+        print("调用类：LazyString(object)")
+        print("参数：{}".format(raw_string))
+        print("参数：{}".format(functions_mapping))
+        print("参数：{}".format(check_variables_set))
+        print("参数：{}".format(cached))
 
     def __parse(self, raw_string):
         """ parse raw string, replace function and variable with {}
@@ -656,6 +725,9 @@ class LazyString(object):
             args: ["${func2($a, $b)}", "$c"]
 
         """
+        print("----------------调用类函数---------------")
+        print("调用函数：__parse(LazyString(object), raw_string)")
+        print("参数：{}".format(raw_string))
         self._args = []
 
         def escape_braces(origin_string):  # 逃避括号
@@ -724,6 +796,8 @@ class LazyString(object):
             self._string += escape_braces(remain_string)
 
     def __repr__(self):
+        print("----------------调用类函数---------------")
+        print("调用函数：__repr__(LazyString(object）)")
         return "LazyString({})".format(self.raw_string)
 
     def to_value(self, variables_mapping=None):
@@ -732,6 +806,9 @@ class LazyString(object):
             Notice: variables_mapping should not contain any variable or function.
             注意:variables_mapping不应该包含任何变量或函数。
         """
+        print("----------------调用类函数---------------")
+        print("调用函数：to_value(LazyString(object), variables_mapping=None)")
+        print("参数：{}".format(variables_mapping))
         variables_mapping = variables_mapping or {}
 
         args = []
@@ -764,6 +841,12 @@ def prepare_lazy_data(content, functions_mapping=None, check_variables_set=None,
 
     """
     # TODO: refactor type check 重构类型检查
+    print("----------------调用函数---------------")
+    print("调用函数：prepare_lazy_data(content, functions_mapping=None, check_variables_set=None, cached=False)")
+    print("参数：{}".format(content))
+    print("参数：{}".format(functions_mapping))
+    print("参数：{}".format(check_variables_set))
+    print("参数：{}".format(cached))
     if content is None or isinstance(content, (numeric_types, bool, type)):
         return content
 
@@ -821,6 +904,10 @@ def parse_lazy_data(content, variables_mapping=None):
         注意:变量映射不应该包含任何变量或函数
     """
     # TODO: refactor type check
+    print("----------------调用函数---------------")
+    print("调用函数：parse_lazy_data(content, variables_mapping=None)")
+    print("参数：{}".format(content))
+    print("参数：{}".format(variables_mapping))
     if content is None or isinstance(content, (numeric_types, bool, type)):
         return content
 
@@ -850,6 +937,11 @@ def eval_lazy_data(content, variables_mapping=None, functions_mapping=None):
     """ evaluate data instantly.立即评估数据
         Notice: variables_mapping should not contain any variable or function.
     """
+    print("----------------调用函数---------------")
+    print("调用函数：eval_lazy_data(content, variables_mapping=None, functions_mapping=None)")
+    print("参数：{}".format(content))
+    print("参数：{}".format(variables_mapping))
+    print("参数：{}".format(functions_mapping))
     variables_mapping = variables_mapping or {}
     check_variables_set = set(variables_mapping.keys())
     return parse_lazy_data(
@@ -866,6 +958,9 @@ def extract_variables(content):
     """ extract all variables in content recursively.
         递归提取内容中的所有变量
     """
+    print("----------------调用函数---------------")
+    print("调用函数：extract_variables(content)")
+    print("参数：{}".format(content))
     if isinstance(content, (list, set, tuple)):
         variables = set()
         for item in content:
@@ -913,6 +1008,9 @@ def parse_variables_mapping(variables_mapping):
             }
 
     """
+    print("----------------调用函数---------------")
+    print("调用函数：parse_variables_mapping(variables_mapping)")
+    print("参数：{}".format(variables_mapping))
     run_times = 0
     parsed_variables_mapping = {}
 
@@ -988,6 +1086,10 @@ def _extend_with_api(test_dict, api_def_dict):
 
     """
     # override api name覆盖api名称
+    print("----------------调用函数---------------")
+    print("调用函数：_extend_with_api(test_dict, api_def_dict)")
+    print("参数：{}".format(test_dict))
+    print("参数：{}".format(api_def_dict))
     test_dict.setdefault("name", api_def_dict.pop("name", "api name undefined"))
 
     # override variables覆盖变量
@@ -1063,6 +1165,10 @@ def _extend_with_testcase(test_dict, testcase_def_dict):
         dict: extended test dict.
 
     """
+    print("----------------调用函数---------------")
+    print("调用函数：_extend_with_testcase(test_dict, testcase_def_dict)")
+    print("参数：{}".format(test_dict))
+    print("参数：{}".format(testcase_def_dict))
     # override testcase config variables重写testcase配置变量
     testcase_def_dict["config"].setdefault("variables", {})
     testcase_def_variables = utils.ensure_mapping_format(
@@ -1092,6 +1198,11 @@ def _extend_with_testcase(test_dict, testcase_def_dict):
 def __prepare_config(config, project_mapping, session_variables_set=None):
     """ parse testcase/testsuite config.
     """
+    print("----------------调用函数---------------")
+    print("调用函数：__prepare_config(config, project_mapping, session_variables_set=None)")
+    print("参数：{}".format(config))
+    print("参数：{}".format(project_mapping))
+    print("参数：{}".format(session_variables_set))
     # get config variables得到配置变量
     raw_config_variables = config.pop("variables", {})
 
@@ -1147,6 +1258,12 @@ def __prepare_testcase_tests(tests, config, project_mapping, session_variables_s
         project_mapping (dict):
 
     """
+    print("----------------调用函数---------------")
+    print("调用函数：__prepare_testcase_tests(tests, config, project_mapping, session_variables_set=None)")
+    print("参数：{}".format(tests))
+    print("参数：{}".format(config))
+    print("参数：{}".format(project_mapping))
+    print("参数：{}".format(session_variables_set))
     config_variables = config.get("variables", {})
     config_base_url = config.get("base_url", "")
     config_verify = config.get("verify", True)
@@ -1275,6 +1392,11 @@ def _parse_testcase(testcase, project_mapping, session_variables_set=None):
             }
 
     """
+    print("----------------调用函数---------------")
+    print("调用函数：_parse_testcase(testcase, project_mapping, session_variables_set=None)")
+    print("参数：{}".format(testcase))
+    print("参数：{}".format(project_mapping))
+    print("参数：{}".format(session_variables_set))
     testcase.setdefault("config", {})
 
     try:
@@ -1352,6 +1474,11 @@ def __get_parsed_testsuite_testcases(testcases, testsuite_config, project_mappin
             }
 
     """
+    print("----------------调用函数---------------")
+    print("调用函数：__get_parsed_testsuite_testcases(testcases, testsuite_config, project_mapping)")
+    print("参数：{}".format(testcases))
+    print("参数：{}".format(testsuite_config))
+    print("参数：{}".format(project_mapping))
     testsuite_base_url = testsuite_config.get("base_url")
     testsuite_config_variables = testsuite_config.get("variables", {})
     functions = project_mapping.get("functions", {})
@@ -1426,6 +1553,10 @@ def __get_parsed_testsuite_testcases(testcases, testsuite_config, project_mappin
 
 
 def _parse_testsuite(testsuite, project_mapping):
+    print("----------------调用函数---------------")
+    print("调用函数：_parse_testsuite(testsuite, project_mapping)")
+    print("参数：{}".format(testsuite))
+    print("参数：{}".format(project_mapping))
     testsuite.setdefault("config", {})
     prepared_config = __prepare_config(testsuite["config"], project_mapping)
     parsed_testcase_list = __get_parsed_testsuite_testcases(
@@ -1503,6 +1634,9 @@ def parse_tests(tests_mapping):
             }
 
     """
+    print("----------------调用函数---------------")
+    print("调用函数：parse_tests(tests_mapping)")
+    print("参数：{}".format(tests_mapping))
     project_mapping = tests_mapping.get("project_mapping", {})
     testcases = []
 
