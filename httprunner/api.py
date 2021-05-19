@@ -88,9 +88,9 @@ class HttpRunner(object):
 
             return test
 
-        test_suite = unittest.TestSuite()  # 用例集的子类
-        for testcase in testcases:  #遍历用例集中引用的每一个用例
-            config = testcase.get("config", {})
+        test_suite = unittest.TestSuite()  # 用例集
+        for testcase in testcases:  #遍历用例集
+            config = testcase.get("config", {})  # 字典(Dictionary) get() 函数返回指定键的值
             test_runner = runner.Runner(config)
             TestSequense = type('TestSequense', (unittest.TestCase,), {})  #创建测试用例：unittest.TestCase子类
 

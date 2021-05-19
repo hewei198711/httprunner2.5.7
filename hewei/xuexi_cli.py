@@ -13,18 +13,21 @@ from httprunner.report import gen_html_report
 from httprunner.utils import (create_scaffold, get_python2_retire_msg,
                               prettify_json_file, init_sentry_sdk)
 
-init_sentry_sdk()
+
+# parser = argparse.ArgumentParser(description=__description__)
+# parser.add_argument("-V", "--version", dest="version", action="store_true",
+#                     help="show version")
 
 
-def main():
-    """
-    解析命令行选项和运行命令
-    """
-    if is_py2:
-        color_print(get_python2_retire_msg(), "YELLOW")
-
-    parser = argparse.ArgumentParser(description=__description__)
-    parser.add_argument("-V", "--version", dest="version", action="store_true",
-                        help="show version")
-
-
+parser = argparse.ArgumentParser(description="我是何伟的命令行参数")
+parser.add_argument(
+    "hewei_path", nargs="*",
+    help="我是何伟的位置参数")
+parser.add_argument(
+    "-v", "--version", dest="version", action="store_true",
+    help="hewei de version"
+)
+args = parser.parse_args()
+print(args)
+print(args.hewei_path)
+print(args.version)

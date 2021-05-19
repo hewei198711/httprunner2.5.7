@@ -7,6 +7,7 @@ from httprunner import logger
 class HtmlTestResult(unittest.TextTestResult):
     """ A html result class that can generate formatted html results.
         Used by TextTestRunner.
+        可以生成格式化html结果的html结果类。由TextTestRunner使用
     """
     def __init__(self, stream, descriptions, verbosity):
         super(HtmlTestResult, self).__init__(stream, descriptions, verbosity)
