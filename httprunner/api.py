@@ -1,6 +1,6 @@
 import os
 import unittest
-
+from pprint import pprint
 
 from sentry_sdk import capture_message
 
@@ -57,12 +57,15 @@ class HttpRunner(object):
             unittest.TestSuite()
 
         """
+
         def _add_test(test_runner, test_dict):
             """ add test to testcase. 把步骤添加到用例，返回一个测试步骤
             """
+
             def test(self):
                 try:
                     test_runner.run_test(test_dict)
+                    pprint(test_runner)
                 except exceptions.MyBaseFailure as ex:
                     self.fail(str(ex))
                 finally:
@@ -72,12 +75,14 @@ class HttpRunner(object):
                 # run nested testcase 嵌套的testcase运行：testcase引用了testcase
                 test.__doc__ = test_dict["config"].get("name")
                 variables = test_dict["config"].get("variables", {})
+                pprint(variables)
             else:
                 # run api test  运行api测试  testcase引用了api
                 test.__doc__ = test_dict.get("name")
                 variables = test_dict.get("variables", {})
 
             if isinstance(test.__doc__, parser.LazyString):  #懒惰的字符串：名字中有引用的变量
+
                 try:
                     parsed_variables = parser.parse_variables_mapping(variables)  # 所有的变量字典
                     test.__doc__ = parser.parse_lazy_data(  # 找到引用变量对应的值
@@ -93,10 +98,11 @@ class HttpRunner(object):
             config = testcase.get("config", {})
             test_runner = runner.Runner(config)
             TestSequense = type('TestSequense', (unittest.TestCase,), {})  #创建测试用例：unittest.TestCase子类
-
             tests = testcase.get("teststeps", [])  # 测试步骤
+
             for index, test_dict in enumerate(tests):  # 遍历每一个测试步骤
                 times = test_dict.get("times", 1)
+
                 try:
                     times = int(times)
                 except ValueError:
@@ -113,11 +119,16 @@ class HttpRunner(object):
                     setattr(TestSequense, test_method_name, test_method)  #加载测试方法到测试用例中：unittest.TestCase子类
 
             loaded_testcase = self.test_loader.loadTestsFromTestCase(TestSequense)  # 加载测试用例到用例集（小集：测试用例）
+
             setattr(loaded_testcase, "config", config)  # 加载属性到用例集（小集：测试用例）
+
             setattr(loaded_testcase, "teststeps", tests)  # 加载属性到用例集（小集：测试用例）
+
             setattr(loaded_testcase, "runner", test_runner)  # 加载运行方法到用例集（小集：测试用例）
+
             test_suite.addTest(loaded_testcase)  # 加载用例集（小集：测试用例）到大用例集
 
+        pprint(test_suite)
         return test_suite
 
     def _run_suite(self, test_suite):
@@ -303,6 +314,8 @@ class HttpRunner(object):
         Returns:
             dict: result summary
 
+        例如：
+        path_or_tests = testcases/服务中心管理/服务中心列表查询/新建服务中心/校验证件号唯一性.yml
         """
         logger.log_info("HttpRunner version: {}".format(__version__))
         if loader.is_test_path(path_or_tests):
