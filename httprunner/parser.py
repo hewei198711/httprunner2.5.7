@@ -1553,10 +1553,6 @@ def __get_parsed_testsuite_testcases(testcases, testsuite_config, project_mappin
 
 
 def _parse_testsuite(testsuite, project_mapping):
-    print("----------------调用函数---------------")
-    print("调用函数：_parse_testsuite(testsuite, project_mapping)")
-    print("参数：{}".format(testsuite))
-    print("参数：{}".format(project_mapping))
     testsuite.setdefault("config", {})
     prepared_config = __prepare_config(testsuite["config"], project_mapping)
     parsed_testcase_list = __get_parsed_testsuite_testcases(
@@ -1634,14 +1630,11 @@ def parse_tests(tests_mapping):
             }
 
     """
-    print("----------------调用函数---------------")
-    print("调用函数：parse_tests(tests_mapping)")
-    print("参数：{}".format(tests_mapping))
     project_mapping = tests_mapping.get("project_mapping", {})
     testcases = []
 
     for test_type in tests_mapping:
-
+        # 如果是测试用例集
         if test_type == "testsuites":
             # load testcases of testsuite
             testsuites = tests_mapping["testsuites"]

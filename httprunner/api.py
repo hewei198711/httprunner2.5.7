@@ -48,14 +48,13 @@ class HttpRunner(object):
 
     def _add_tests(self, testcases):
         """ initialize testcase with Runner() and add to test suite.
-            用Runner()初始化testcase并添加到测试套件中
+            把测试用例加载到测试套件中
 
         Args:
             testcases (list): testcases list.
 
         Returns:
             unittest.TestSuite()
-
         """
 
         def _add_test(test_runner, test_dict):
@@ -132,7 +131,7 @@ class HttpRunner(object):
         return test_suite
 
     def _run_suite(self, test_suite):
-        """ run tests in test_suite 在测试套件中运行测试
+        """ 运行测试套件
 
         Args:
             test_suite: unittest.TestSuite()
@@ -156,7 +155,7 @@ class HttpRunner(object):
         return tests_results
 
     def _aggregate(self, tests_results):
-        """ aggregate results 总结果
+        """ 测试结果总数据
 
         Args:
             tests_results (list): list of (testcase, result)
@@ -198,7 +197,54 @@ class HttpRunner(object):
         return summary
 
     def run_tests(self, tests_mapping):
-        """ run testcase/testsuite data
+        """
+        run testcase/testsuite data
+        project_mapping = {
+            "env": {"username": "hewei1987","password": "888888"},
+            "PWD": "D:\\git_ligeit\\test_ucong",
+            "functions": {},
+            "test_path": "D:\\git_ligeit\\test_ucong\\api\\财务管理\\服务中心银行流水\\汇款.yml"
+            }
+        parsed_testcases = [
+            {
+                "config":{
+                    "name":"/mgmt/store/checkBusinessAddressIsExist"
+                },
+                "teststeps":[
+                    {
+                        "name":"/mgmt/store/checkBusinessAddressIsExist",
+                        "request":{
+                            "headers":{
+                                "Authorization":"LazyString(${token_type} ${access_token})"
+                            },
+                            "method":"GET",
+                            "params":{
+                                "provinceName":"LazyString(${provinceName})",
+                                "cityName":"LazyString(${cityName})",
+                                "areaName":"LazyString(${areaName})",
+                                "streetName":"LazyString(${streetName})",
+                                "detailAddress":"LazyString(${detailAddress})"
+                            },
+                            "url":"LazyString(${base_url}/mgmt/store/checkBusinessAddressIsExist)",
+                            "verify":true
+                        },
+                        "variables":{
+                            "provinceName":"广东省",
+                            "cityName":"广州市",
+                            "areaName":"海珠区",
+                            "streetName":"南州街道",
+                            "detailAddress":"广州市海珠区南洲街道新滘中路88号唯品同创汇6区东三街17号自编23号",
+                            "access_token":"LazyString(${ENV(access_token)})",
+                            "token_type":"LazyString(${ENV(token_type)})",
+                            "base_url":"LazyString(${ENV(base_url)})"
+                        },
+                        "validate":[
+                            "LazyFunction(equals(status_code, 200))"
+                        ]
+                    }
+                ]
+            }
+        ]
         """
         capture_message("start to run tests")
         project_mapping = tests_mapping.get("project_mapping", {})
@@ -209,6 +255,7 @@ class HttpRunner(object):
 
         # parse tests
         self.exception_stage = "parse tests"
+        # 用测试用例抽出来（变量已经按优先级处理正确），剩下LazyString(${token_type} ${access_token})未解析
         parsed_testcases = parser.parse_tests(tests_mapping)
         parse_failed_testfiles = parser.get_parse_failed_testfiles()
         if parse_failed_testfiles:
@@ -224,6 +271,8 @@ class HttpRunner(object):
 
         # add tests to test suite
         self.exception_stage = "add tests to test suite"
+        # <unittest.suite.TestSuite tests=
+        # [<unittest.suite.TestSuite tests=[<httprunner.api.TestSequense testMethod=test_0000_000>]>]>
         test_suite = self._add_tests(parsed_testcases)
 
         # run test suite
@@ -240,7 +289,7 @@ class HttpRunner(object):
 
         if self.save_tests:
             utils.dump_logs(self._summary, project_mapping, "summary")
-            # save variables and export data
+            # save variables and export data保存变量和导出数据
             vars_out = self.get_vars_out()
             utils.dump_logs(vars_out, project_mapping, "io")
 
@@ -305,7 +354,7 @@ class HttpRunner(object):
 
         Args:
             path_or_tests:
-                str: testcase/testsuite file/foler path
+                str: testcase/testsuite file/foler path（testcases/服务中心管理/服务中心列表查询/新建服务中心/校验证件号唯一性.yml）
                 dict: valid testcase/testsuite data
             dot_env_path (str): specified .env file path. 指定的.env文件路径。
             mapping (dict): if mapping is specified, it will override variables in config block.
@@ -314,8 +363,6 @@ class HttpRunner(object):
         Returns:
             dict: result summary
 
-        例如：
-        path_or_tests = testcases/服务中心管理/服务中心列表查询/新建服务中心/校验证件号唯一性.yml
         """
         logger.log_info("HttpRunner version: {}".format(__version__))
         if loader.is_test_path(path_or_tests):
