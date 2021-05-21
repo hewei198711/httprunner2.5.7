@@ -59,6 +59,33 @@ class HttpRunner(object):
 
         def _add_test(test_runner, test_dict):
             """ add test to testcase. 把步骤添加到用例，返回一个测试步骤
+            test_dict = parsed_testcases[0][teststeps][0]
+            test_dict = {
+                "name": "/mgmt/store/checkBusinessAddressIsExist",
+                "request": {
+                    "headers": {"Authorization": "LazyString(${token_type} ${access_token})"},
+                    "method": "GET",
+                    "params": {
+                        "provinceName": "LazyString(${provinceName})",
+                        "cityName": "LazyString(${cityName})",
+                        "areaName": LazyString(${areaName}),
+                        "streetName": LazyString(${streetName}),
+                        "detailAddress": LazyString(${detailAddress})},
+                        "url": LazyString(${base_url}/mgmt/store/checkBusinessAddressIsExist),
+                        "verify": True
+                        },
+                        "variables": {
+                            "provinceName": "广东省",
+                            "cityName": "广州市",
+                            "areaName": "海珠区",
+                            "streetName": "南州街道",
+                            "detailAddress": "广州市海珠区南洲街道新滘中路88号唯品同创汇6区东三街17号自编23号",
+                            "access_token": LazyString(${ENV(access_token)}),
+                            "token_type": LazyString(${ENV(token_type)}),
+                            "base_url": LazyString(${ENV(base_url)})
+                        },
+                        "validate": [LazyFunction(equals(status_code, 200))]
+            }
             """
 
             def test(self):
@@ -71,10 +98,9 @@ class HttpRunner(object):
                     self.meta_datas = test_runner.meta_datas
 
             if "config" in test_dict:
-                # run nested testcase 嵌套的testcase运行：testcase引用了testcase
+                # run nested testcase 嵌套testcase运行：testcase引用了testcase
                 test.__doc__ = test_dict["config"].get("name")
                 variables = test_dict["config"].get("variables", {})
-                pprint(variables)
             else:
                 # run api test  运行api测试  testcase引用了api
                 test.__doc__ = test_dict.get("name")
@@ -89,15 +115,16 @@ class HttpRunner(object):
                     )
                 except exceptions.VariableNotFound:
                     test.__doc__ = str(test.__doc__)
-
+            # 返回函数<function HttpRunner._add_tests.<locals>._add_test.<locals>.test at 0x000002D69C38A550>
             return test
 
-        test_suite = unittest.TestSuite()  # 用例集
-        for testcase in testcases:  #遍历用例集
-            config = testcase.get("config", {})  # 字典(Dictionary) get() 函数返回指定键的值
+        test_suite = unittest.TestSuite()  # 用例集的子类
+        for testcase in testcases:  #遍历用例中引用的每一个用例
+            config = testcase.get("config", {})
+            # <httprunner.runner.Runner object at 0x000002629251F520>
             test_runner = runner.Runner(config)
             TestSequense = type('TestSequense', (unittest.TestCase,), {})  #创建测试用例：unittest.TestCase子类
-            tests = testcase.get("teststeps", [])  # 测试步骤
+            tests = testcase.get("teststeps", [])  # 测试用例
 
             for index, test_dict in enumerate(tests):  # 遍历每一个测试步骤
                 times = test_dict.get("times", 1)
@@ -127,7 +154,6 @@ class HttpRunner(object):
 
             test_suite.addTest(loaded_testcase)  # 加载用例集（小集：测试用例）到大用例集
 
-        pprint(test_suite)
         return test_suite
 
     def _run_suite(self, test_suite):

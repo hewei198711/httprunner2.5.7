@@ -1392,11 +1392,7 @@ def _parse_testcase(testcase, project_mapping, session_variables_set=None):
             }
 
     """
-    print("----------------调用函数---------------")
-    print("调用函数：_parse_testcase(testcase, project_mapping, session_variables_set=None)")
-    print("参数：{}".format(testcase))
-    print("参数：{}".format(project_mapping))
-    print("参数：{}".format(session_variables_set))
+    # 字典 setdefault() 函数和 get()方法 类似, 如果键不存在于字典中，将会添加键并将值设为默认值
     testcase.setdefault("config", {})
 
     try:
